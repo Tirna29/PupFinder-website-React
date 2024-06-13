@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { fetchDogs, matchDogs } from "../api";
 import DogList from "../components/DogList";
 import DogCard from "../components/DogCard";
@@ -9,8 +9,10 @@ const FavoritesPage = () => {
   const [favoriteDogs, setFavoriteDogs] = useState([]);
   const [matchedDog, setMatchedDog] = useState(null);
   const locationState = useLocation().state;
-  const favorites = locationState || [];
-  const history = useNavigate();
+
+  const favorites = useMemo(() => locationState.favorites || [], [locationState]);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const loadFavoriteDogs = async () => {
       if (favorites.length > 0) {
@@ -32,12 +34,12 @@ const FavoritesPage = () => {
   };
 
   const navigateToHome = () => {
-    history("/search");
+    navigate("/search");
   };
 
   return (
     <Container>
-      <Typography variant="h2" gutterBottom align="center" sx={{color:"darkblue"}}>
+      <Typography variant="h2" gutterBottom align="center" sx={{ color: "darkblue" }}>
         Your Favorite Dogs
       </Typography>
       {favorites.length === 0 ? (
@@ -45,41 +47,31 @@ const FavoritesPage = () => {
           No favorite dogs selected.
         </Typography>
       ) : (
-        <>
-          <Box display="flex" flexDirection="column" alignItems="center">
-            <DogList dogs={favoriteDogs} />
-            <Box marginTop={2}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleGetMatch}
-              >
-                Get Match
-              </Button>
-            </Box>
-            {matchedDog && (
-              <Paper
-                elevation={3}
-                sx={{ padding: 4, marginTop: 4, maxWidth: 600 }}
-              >
-                <Typography variant="h4" gutterBottom align="center" sx={{color:"darkblue"}}>
-                  Matched Dog
-                </Typography>
-                <DogCard dog={matchedDog} />
-              </Paper>
-            )}
-            <Button
-                variant="contained"
-                color="primary"
-                onClick={navigateToHome}
-                sx={{ margin: "1.5em 0"}}
-              >
-                Return To Home
-              </Button>
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <DogList dogs={favoriteDogs} />
+          <Box marginTop={2}>
+            <Button variant="contained" color="primary" onClick={handleGetMatch}>
+              Get Match
+            </Button>
           </Box>
-        </>
+          {matchedDog && (
+            <Paper elevation={3} sx={{ padding: 4, marginTop: 4, maxWidth: 600 }}>
+              <Typography variant="h4" gutterBottom align="center" sx={{ color: "darkblue" }}>
+                Matched Dog
+              </Typography>
+              <DogCard dog={matchedDog} />
+            </Paper>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={navigateToHome}
+            sx={{ margin: "1.5em 0" }}
+          >
+            Return To Home
+          </Button>
+        </Box>
       )}
-      
     </Container>
   );
 };

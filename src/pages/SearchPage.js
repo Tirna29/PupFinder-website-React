@@ -77,7 +77,7 @@ const SearchPage = () => {
       }));
     };
     fetchDogResults();
-  }, [filters, pagination.currentPage]);
+  }, [filters, pagination.currentPage, pagination.resultsPerPage]);
 
   const handleFavorite = (dogId) => {
     setFavorites((prev) => [...prev, dogId]);
@@ -110,12 +110,14 @@ const SearchPage = () => {
   };
 
   const handleViewFavorites = () => {
-    navigate('/favorites', { state:  favorites  });
+    navigate('/favorites', { state: { favorites } });
   };
 
   return (
     <Container>
-      <Typography variant="h2" gutterBottom align="center" sx={{color:"darkblue"}}>Search Dogs</Typography>
+      <Typography variant="h2" gutterBottom align="center" sx={{ color: 'darkblue' }}>
+        Search Dogs
+      </Typography>
       <FormWrapper component="form" onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <InputLabel>Breed</InputLabel>
